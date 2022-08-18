@@ -17,6 +17,7 @@ const viewer = new IfcViewerAPI({
 });
 viewer.grid.setGrid();
 viewer.axes.setAxes();
+setUpMultiThreading();
 
 if (currentProjectID === "0") {
   const input = document.getElementById("custom-file-upload");
@@ -65,6 +66,26 @@ async function loadIfc(url) {
 window.ondblclick = async () => await viewer.IFC.selector.pickIfcItem();
 window.onmousemove = async () => await viewer.IFC.selector.prePickIfcItem();
 
+const backBtn=document.getElementById("btn-back");
+backBtn.onclick=()=>{
+  viewer.dispose();
+  window.open("./index.html","_self");
+}
+
+async function releaseMemory() {
+  // This releases all IFCLoader memory
+  await viewwr.IFC.ifcLoader.ifcManager.dispose()//ifcLoader.ifcManager.dispose();
+  ifcLoader = null;
+  ifcLoader = new IFCLoader();
+
+  // If the wasm path was set before, we need to reset it
+  await ifcLoader.ifcManager.setWasmPath('../');
+
+  // If IFC models are an array or object,
+  // you must release them there as well
+  // Otherwise, they won't be garbage collected
+  models.length = 0;
+}
 //HIDE BUTTON ----------------------------------------------------------------------------------------
 async function hide() {
   window.ondblclick = async () => {
@@ -404,6 +425,21 @@ function createTreeMenu(ifcProject) {
     ifcProject.children.forEach(child => {
         constructTreeMenuNode(ifcProjectNode, child);
     })
+
+}
+
+function reorderTree(){
+  const leaves=document.getElementsByClassName("leaf-node");
+  let ifcClasses=[];
+  for (const leaf of leaves){
+    const text = leaf.textContent.split(" - ")[0];
+    ifcClasses.push(text);
+  }
+  const single_ifcClasses=[...new Set(ifcClasses)];
+  //leaves.remove();
+  for (const ifcClass in single_ifcClasses){
+
+  }
 }
 
 function nodeToString(node) {
@@ -460,12 +496,51 @@ function createSimpleChild(parent, node) {
     }
 }
 
+async function getProjectName(ifcProject){
+  const ifcProjectID=ifcProject.expressID;
+  const ifcProjectProps = await viewer.IFC.loader.ifcManager.getItemProperties(modelID,ifcProjectID);
+  const name=ifcProjectProps.Name.value;
+  return "IfcProject - "+name;
+}
+
+async function getSiteName(ifcProject){
+  const ifcSiteID=ifcProject.children[0].expressID;
+  const ifcSiteProps = await viewer.IFC.loader.ifcManager.getItemProperties(modelID,ifcSiteID);
+  const name=ifcSiteProps.Name.value;
+  return "IfcSite - "+name;
+}
+
+async function getBuildingName(ifcProject){
+  const ifcBuildingID=ifcProject.children[0].children[0].expressID;
+  const ifcBuildingProps = await viewer.IFC.loader.ifcManager.getItemProperties(modelID,ifcBuildingID);
+  const name=ifcBuildingProps.Name.value;
+  return "IfcBuilding - "+name;
+}
+
+async function getBuildingStoreyNames(ifcProject){
+  const ifcBuildingStoreys=ifcProject.children[0].children[0].children;
+  let result=[];
+  for (const bs of ifcBuildingStoreys){
+    const id=bs.expressID;
+    const props=await viewer.IFC.loader.ifcManager.getItemProperties(modelID,id);
+    const name=props.Name.value;
+    result.push("IfcBuildingStorey - "+name);
+  }
+  return result;
+}
+
+async function setUpMultiThreading() {
+  const manager = viewer.IFC.loader.ifcManager;
+  // These paths depend on how you structure your project
+  await manager.useWebWorkers(true, '../IFCWorker.js');
+}
 
 
 
 /*
 //TO DO ------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-1 - dispose quando torno nella gallery
-2 - treeview
-3 - prop native già attive al caricamento. ripeti il comando nella window.onclick esterna, aggiungendo if nativeactive=true (gli altri restano col pulsante)
+1 - dispose quando torno nella gallery OK
+2 - Multithreading OK
+3 - treeview raggruppata per classi
+4 - prop native già attive al caricamento. ripeti il comando nella window.onclick esterna, aggiungendo if nativeactive=true (gli altri restano col pulsante)
 */

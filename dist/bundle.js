@@ -112769,6 +112769,7 @@ const viewer = new IfcViewerAPI({
 });
 viewer.grid.setGrid();
 viewer.axes.setAxes();
+setUpMultiThreading();
 
 if (currentProjectID === "0") {
   const input = document.getElementById("custom-file-upload");
@@ -112817,6 +112818,11 @@ async function loadIfc(url) {
 window.ondblclick = async () => await viewer.IFC.selector.pickIfcItem();
 window.onmousemove = async () => await viewer.IFC.selector.prePickIfcItem();
 
+const backBtn=document.getElementById("btn-back");
+backBtn.onclick=()=>{
+  viewer.dispose();
+  window.open("./index.html","_self");
+};
 //HIDE BUTTON ----------------------------------------------------------------------------------------
 async function hide() {
   window.ondblclick = async () => {
@@ -113156,6 +113162,7 @@ function createTreeMenu(ifcProject) {
     ifcProject.children.forEach(child => {
         constructTreeMenuNode(ifcProjectNode, child);
     });
+
 }
 
 function nodeToString(node) {
@@ -113212,12 +113219,18 @@ function createSimpleChild(parent, node) {
     };
 }
 
+async function setUpMultiThreading() {
+  const manager = viewer.IFC.loader.ifcManager;
+  // These paths depend on how you structure your project
+  await manager.useWebWorkers(true, '../IFCWorker.js');
+}
 
 
 
 /*
 //TO DO ------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-1 - dispose quando torno nella gallery
-2 - treeview
-3 - prop native già attive al caricamento. ripeti il comando nella window.onclick esterna, aggiungendo if nativeactive=true (gli altri restano col pulsante)
+1 - dispose quando torno nella gallery OK
+2 - Multithreading
+3 - treeview raggruppata per classi
+4 - prop native già attive al caricamento. ripeti il comando nella window.onclick esterna, aggiungendo if nativeactive=true (gli altri restano col pulsante)
 */
