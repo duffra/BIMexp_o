@@ -1,0 +1,515 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  --light-gray: lightgray;
+  --deep-blue_01: #152f50;
+  --deep-blue_02: #07182e;
+  --background: ghostwhite;
+  --card_background: #f5f5f5;
+}
+
+body {
+  overflow: auto;
+}
+
+.app-container {
+  height: 100em;
+  width: 100%;
+  top: 0;
+  display: flex;
+
+  justify-content: flex-start;
+}
+
+.sidebar {
+  height: 100em;
+  min-width: 10rem;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* From uiverse.io by @gagan-gv */
+.personal-card {
+  width: 100%;
+  background: var(--deep-blue_02);
+  text-align: center;
+  color: #f0f0f0;
+  font-family: inherit;
+  z-index: 1;
+}
+
+.img {
+  margin: 60px auto 10px auto;
+  width: 75px;
+  height: 75px;
+  border: 1px solid #f0f0f0;
+  border-radius: 50%;
+  font-size: 11px;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s;
+  z-index: 99;
+  background-color: var(--deep-blue_01);
+}
+
+.personal-card p {
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.personal-card h1 {
+  padding: 10px;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.personal-card svg {
+  padding: 0 5px;
+  cursor: pointer;
+}
+
+.personal-card:hover .img {
+  transform: scale(1.1);
+  border: 1px solid #f0f0f0;
+}
+
+.personal-card:hover h1,
+.personal-card:hover p {
+  opacity: 1;
+}
+
+.card-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  background-color: var(--background);
+}
+
+/* From uiverse.io by @alexruix */
+/*Magic card*/
+.card {
+  margin: 5rem 1.8rem 2rem 1.8rem;
+  width: 190px;
+  height: 254px;
+  background: var(--card_background);
+  overflow: visible;
+  box-shadow: 0 5px 20px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2em;
+  padding: 0 1rem;
+}
+
+.card-img {
+  --size: 100px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 30%;
+  transform: translateY(-50%);
+  background: #42caff;
+  background: linear-gradient(to bottom, #42caff 0%, #e81aff 100%);
+  position: relative;
+}
+
+.card:hover .card-img {
+  border-radius: 50%;
+  transition: all 0.3s ease-in-out;
+}
+
+.card-img svg {
+  background-color: transparent;
+  fill: white;
+  transform: scale(2.5);
+  margin-left: 35%;
+  margin-top: 35%;
+}
+
+#card-new-model {
+  --size: 100px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 30%;
+  transform: translateY(-50%);
+  background: #4defa6;
+  background: linear-gradient(to bottom, #4defa6 0%, #23c483 100%);
+  position: relative;
+}
+
+#load-new-model {
+  background-color: transparent;
+  fill: white;
+  transform: scale(0.7);
+  margin-left: 5%;
+  margin-top: 5%;
+}
+
+.card-img::before {
+  content: "";
+  border-radius: inherit;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  height: 90%;
+  transform: translate(-50%, -50%);
+  border: 1rem solid #e8e8e8;
+}
+
+.text-title{
+  font-size: 1em;
+  text-align: center;
+  color: #6f6d78;
+  font-weight: bold;
+}
+
+.text-body {
+  font-size: 0.8em;
+  text-align: center;
+  color: #6f6d78;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.card:hover .card-img {
+  --size: 100px;
+  width: var(--size);
+  height: var(--size);
+}
+
+/* From uiverse.io */
+.card button,
+.button {
+  padding: 0.5em 1.2em;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+  bottom: 0.7rem;
+  position: relative;
+}
+
+.custom-file-upload {
+  padding: 0.1em 2.8em;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: #fff;
+  border-radius: 45px;
+  align-items: center;
+
+  margin: 1.5rem;
+  display: flex;
+  position: absolute;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  justify-content: center;
+  right: 0.3rem;
+}
+
+.card button:hover,
+.button:hover {
+  background: linear-gradient(to bottom, #e81aff 100%, #6e037a 100%);
+  box-shadow: 0px 15px 20px rgba(46, 70, 229, 0.4);
+  color: #fff;
+}
+
+.btn-viewer {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.7rem;
+  border-radius: 50%;
+}
+
+.btn-viewer:hover,
+.custom-file-upload:hover,
+.active-btn {
+  background: var(--deep-blue_01);
+  fill: white;
+  box-shadow: 0px 5px 10px rgba(13, 29, 132, 0.4);
+  color: #fff;
+}
+
+#load-btn:hover {
+  background: #23c483;
+  background: linear-gradient(to bottom, #23c483 100%, #23c483 100%);
+  box-shadow: 0px 15px 20px rgba(46, 70, 229, 0.4);
+  color: #fff;
+}
+
+#load-btn {
+  margin-top: 10%;
+}
+
+#card-new:hover #card-new-model {
+  border-radius: 50%;
+  transition: all 0.4s ease-in-out;
+}
+
+#file-input {
+  position: absolute;
+  visibility: hidden;
+}
+
+#viewer-container {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.vertical-card-container {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  height: 100%;
+}
+
+.right {
+  right: 1rem;
+  justify-content: right;
+  align-items: center;
+}
+
+.bottom {
+  justify-content: center;
+  align-items: flex-end;
+  width: calc(100% - 20rem);
+  height: calc(100vh - 4.5rem);
+  margin-left: 20rem;
+}
+
+.vertical-card-container .toolbar {
+  display: flex;
+  height: calc(100vh - 4.5rem);
+  flex-flow: column wrap-reverse;
+  justify-content: center;
+}
+
+.card-container .toolbar {
+  display: flex;
+  width: calc(100vw - 20rem);
+  flex-flow: row wrap-reverse;
+  justify-content: center;
+}
+
+.toolbar button {
+  margin: 0.5rem;
+}
+
+.nav-flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background: var(--deep-blue_01);
+  height: 4.5rem;
+}
+
+.nav-flex h3 {
+  color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.logo {
+  width: 4rem;
+  height: 4rem;
+  border: 1px solid #f0f0f0;
+  border-radius: 50%;
+  font-size: 11px;
+  align-items: center;
+  transition: all 0.5s;
+  z-index: 99;
+  background-color: var(--deep-blue_01);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 1.5rem;
+}
+
+#btn-back {
+  margin-right: 1.5rem;
+  bottom: 0;
+}
+
+#btn-back:hover {
+  background: #fff;
+  box-shadow: 0px 15px 20px rgba(255, 255, 255, 0.4);
+  color: var(--deep-blue_01);
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  background-color: var(--deep-blue_01);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5em 1.2em;
+  letter-spacing: 0;
+
+  position: absolute;
+  z-index: 1;
+  right: 100%;
+  display: flex;
+  flex-flow: row;
+  align-content: center;
+  justify-content: center;
+  margin-top:-1.8rem;
+  margin-right: 0.5rem;
+}
+
+.btn-viewer:hover .tooltiptext {
+  visibility: visible;
+}
+
+/*Tree view: https://www.w3schools.com/howto/howto_js_treeview.asp*/
+.ifc-tree-menu {
+  position: absolute;
+  overflow-y: scroll;
+  background-color: white;
+  width: 20rem;
+  height: calc((100vh - 4.5rem)/2);
+  color:black;
+}
+
+li ul {
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Remove default bullets */
+ul,
+#myUL {
+  list-style-type: none;
+}
+
+/* Remove margins and padding from the parent ul */
+#myUL {
+  margin: 0.5rem;
+  padding: 0;
+}
+
+/* Style the caret/arrow */
+.caret {
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+  transform: rotate(90deg);
+}
+
+/* Hide the nested list */
+.nested {
+  display: none;
+}
+
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
+  display: block;
+  margin-left: 10px;
+}
+
+.ifc-allProp-menu {
+  width: 20rem;
+  height: 1.5rem;
+  display: flex;
+  background-color: var(--light-gray);
+  position: absolute;
+  font-size: 12px;
+  margin-top: calc((100vh - 4.5rem)/2)
+}
+
+.title-prop-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 1.5rem;
+  font-size: 13px;
+  padding: 2px;
+}
+
+.title-prop {
+  margin-right: 1rem;
+  color: black;
+  font-weight: normal;
+}
+
+.ifc-property-menu {
+  border: 1px solid gray;
+  width: 100%;
+  height: calc((100vh - 4.5rem)/2 - 1.5rem);
+  background-color: white;
+  position: absolute;
+  margin-top: 1.5rem;
+  overflow-y: scroll;
+}
+
+.ifc-property-item {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0.5rem;
+  border-bottom: solid 1px gray;
+}
+
+.ifc-property-value {
+  width: 100%;
+  text-align: right;
+}
+
+.selected {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.vertical {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.pset {
+  font-weight: bold;
+  padding-left: 0.5rem;
+}
