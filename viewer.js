@@ -418,14 +418,23 @@ for (let i = 0; i < toggler.length; i++) {
 
 // Spatial tree menu
 
-function createTreeMenu(ifcProject) {
+/*function createTreeMenu(ifcProject) {
     const root = document.getElementById("tree-root");
     removeAllChildren(root);
     const ifcProjectNode = createNestedChild(root, ifcProject);
     ifcProject.children.forEach(child => {
         constructTreeMenuNode(ifcProjectNode, child);
     })
+}*/
 
+async function createTreeMenu(ifcProject,modelID) {
+  const root = document.getElementById("tree-root");
+  removeAllChildren(root);
+  const ifcProjectNode = createNestedChild(root, ifcProject);
+  ifcProject.children.forEach(child => {
+      constructTreeMenuNode(ifcProjectNode, child);
+  })
+  await renameTree(ifcProject,modelID);
 }
 
 function reorderTree(){
@@ -439,6 +448,28 @@ function reorderTree(){
   //leaves.remove();
   for (const ifcClass in single_ifcClasses){
 
+  }
+}
+
+async function renameTree(ifcProject, modelID){
+  const nestedUl = document.getElementsByClassName("caret");
+  let filteredUl=[];
+  for(const val of nestedUl){
+    const valContent=val.textContent.toString();
+    if (valContent.includes("IFCPROJECT") || valContent.includes("IFCSITE") || valContent.includes("IFCBUILDING") || valContent.includes("IFCBUILDINGSTOREY")){
+      filteredUl.push(val);
+    };
+  };
+  const project = filteredUl[0];
+  project.textContent=await getProjectName(ifcProject,modelID);
+  const site =filteredUl[1];
+  site.textContent=await getSiteName(ifcProject,modelID);
+  const building = filteredUl[2];
+  building.textContent=await getBuildingName(ifcProject,modelID);
+  const buildingStoreys=Array.from(filteredUl).slice(3);
+  const bsNames=await getBuildingStoreyNames(ifcProject,modelID);
+  for (let i = 0; i < buildingStoreys.length; i++){
+    filteredUl[3+i].textContent=bsNames[i];
   }
 }
 
@@ -496,28 +527,28 @@ function createSimpleChild(parent, node) {
     }
 }
 
-async function getProjectName(ifcProject){
+async function getProjectName(ifcProject, modelID){
   const ifcProjectID=ifcProject.expressID;
   const ifcProjectProps = await viewer.IFC.loader.ifcManager.getItemProperties(modelID,ifcProjectID);
   const name=ifcProjectProps.Name.value;
   return "IfcProject - "+name;
 }
 
-async function getSiteName(ifcProject){
+async function getSiteName(ifcProject,modelID){
   const ifcSiteID=ifcProject.children[0].expressID;
   const ifcSiteProps = await viewer.IFC.loader.ifcManager.getItemProperties(modelID,ifcSiteID);
   const name=ifcSiteProps.Name.value;
   return "IfcSite - "+name;
 }
 
-async function getBuildingName(ifcProject){
+async function getBuildingName(ifcProject,modelID){
   const ifcBuildingID=ifcProject.children[0].children[0].expressID;
   const ifcBuildingProps = await viewer.IFC.loader.ifcManager.getItemProperties(modelID,ifcBuildingID);
   const name=ifcBuildingProps.Name.value;
   return "IfcBuilding - "+name;
 }
 
-async function getBuildingStoreyNames(ifcProject){
+async function getBuildingStoreyNames(ifcProject,modelID){
   const ifcBuildingStoreys=ifcProject.children[0].children[0].children;
   let result=[];
   for (const bs of ifcBuildingStoreys){
@@ -539,8 +570,9 @@ async function setUpMultiThreading() {
 
 /*
 //TO DO ------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-1 - dispose quando torno nella gallery OK
-2 - Multithreading OK
+1 OK - dispose quando torno nella gallery
+2 OK - Multithreading
 3 - treeview raggruppata per classi
 4 - prop native già attive al caricamento. ripeti il comando nella window.onclick esterna, aggiungendo if nativeactive=true (gli altri restano col pulsante)
+5 - Progress text
 */
