@@ -513,3 +513,67 @@ ul,
   font-weight: bold;
   padding-left: 0.5rem;
 }
+
+#mydiv {
+  position: absolute;
+  z-index: 9;
+  background-color: #f1f1f1;
+  text-align: center;
+  border: 1px solid #d3d3d3;
+  top:5rem;
+  left:21rem;
+  font-size: 12px;
+  width: 18rem;
+}
+
+#mydivheader {
+  padding: 10px;
+  cursor: move;
+  z-index: 10;
+  background-color: var(--light-gray);
+  color: #fff;
+  width: 100%;
+}
+
+#header-container{
+	display:flex;
+  flex-direction:horizontal;
+  font-weight: bold;
+}
+
+.flexH{
+	padding: 10px;
+  cursor: move;
+  z-index: 10;
+  background-color: var(--light-gray);
+  color: #fff;
+  display: flex;
+  
+}
+
+.btn-ifcClasses {
+  width: 16px;
+  height: 16px;
+  border: 1px;
+  background: none;
+  display: flex;
+  justify-content: end;
+  position: absolute;
+  right: 0.6rem;
+  cursor: pointer;
+}
+
+#ifc-classes-menu{
+  margin-top: 0;
+  height: auto;
+  font-size: 12px;
+}
+
+.ifc-classes-item {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0.5rem;
+  border-bottom: solid 1px gray;
+  cursor: pointer;
+}
