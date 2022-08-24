@@ -35,12 +35,14 @@ This app is built on top of IFC.js and uses web-ifc and web-ifc-viewer.
 - [x] Hide/Isolate object
 - [x] 3D clipping planes
 - [x] Custom Tree view: name-ID (Project,Site,Building,BuildingStoreys), type-ID (instances)
-- [x] Custom Property menu: base on single selection shows IFC properties - native, type, materials, QuantitySets, Psets
+- [x] Custom Property menu: base on single selection shows IFC properties - native, type, materials, QuantitySets, Psets (\*)
 - [x] Custom IfcClasses Project Browser: lists the IFC classes included in the model and highlights the corrisponding elements
 
 - [ ] Considering model coordinates (to have a federation environments)
 - [ ] Grouping the instances by Class in the Tree view
 - [ ] Investigate tab interface for the Property menu
+
+(\*) By default Native properties are active. Can be switch off or toggled with any other kind of properties
 
 ## Authors
 

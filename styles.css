@@ -277,7 +277,8 @@ body {
   display: flex;
   justify-content: center;
   position: absolute;
-  width: 100%;
+  width: calc(100vw - 20rem);
+  margin-left: 20rem;
   height: 100%;
 }
 
@@ -456,7 +457,7 @@ ul,
   background-color: var(--light-gray);
   position: absolute;
   font-size: 12px;
-  margin-top: calc((100vh - 4.5rem)/2)
+  margin-top: calc((100vh - 4.5rem)/2);
 }
 
 .title-prop-container {
