@@ -31,12 +31,12 @@ This app is built on top of IFC.js and uses web-ifc and web-ifc-viewer.
 
 - [x] BIM gallery
 - [x] IFC viewer: geometry and data
-- [x] IFC load new models (single and multiple models)
-- [x] Hide/Isolate object (double click)
+- [x] IFC load new models
+- [x] Hide/Isolate object
 - [x] 3D clipping planes
 - [x] Custom Tree view: name-ID (Project,Site,Building,BuildingStoreys), type-ID (instances)
 - [x] Custom Property menu: base on single selection shows IFC properties - native, type, materials, QuantitySets, builtin Psets (\*)
-- [x] Custom IfcClasses Project Browser: lists the IFC classes included in the model and highlights the corrisponding elements
+- [x] Custom IfcClasses Project Browser: lists the IFC classes included in the model and highlights/isolate/hide the corrisponding elements
 
 - [ ] Considering model coordinates (to have a federation environments)
 - [ ] Grouping the instances by Class in the Tree view

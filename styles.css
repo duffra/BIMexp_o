@@ -409,6 +409,7 @@ input[type="file"] {
   width: 20rem;
   height: calc((100vh - 4.5rem)/2);
   color:black;
+  font-size: 12px;
 }
 
 li ul {
