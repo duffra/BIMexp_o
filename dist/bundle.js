@@ -112827,25 +112827,13 @@ window.onclick = async () => {
   const selected = await viewer.IFC.selector.pickIfcItem();
   if (!selected) return;
 
-  if (hideBtnActive) {
-    let selectedIDs = [];
+  if (isolateBtnActive) {
+    let selectedIDs=[];
     selectedIDs.push(selected.id);
-    const scene = viewer.context.getScene();
-    model.removeFromParent();
-    selectedSubset = viewer.IFC.loader.ifcManager.createSubset({
-      modelID: 0,
-      scene,
-      ids: [selected.id],
-      removePrevious: true,
-      customID: "hidden-selection",
-    });
-    togglePickable(model,selectedSubset,true);
-    viewer.context.renderer.postProduction.update();
+    isolate(selectedIDs,model);
   }
 
-  if (isolateBtnActive) {
-    viewer.IFC.selector.highlightIfcItem(true, false, true);
-  }
+  if (hideBtnActive) ;
 
   if(nativePropertiesBtnActive){
     nativePropertiesButton.classList.add("active-btn");
@@ -112931,6 +112919,20 @@ window.onkeydown = (event) => {
   }
 };
 
+function isolate(ids,mymodel){
+  const scene = viewer.context.getScene();
+  mymodel.removeFromParent();
+  selectedSubset = viewer.IFC.loader.ifcManager.createSubset({
+    modelID: 0,
+    scene,
+    ids: ids,
+    removePrevious: true,
+    customID: "isolated-selection",
+  });
+  togglePickable(mymodel,selectedSubset,true);
+  viewer.context.renderer.postProduction.update();
+}
+
 function togglePickable(mymodel, mysubset, isPickable){
   if (isPickable){
     viewer.context.items.pickableIfcModels = viewer.context.items.pickableIfcModels.filter((m) => m !== mymodel);
@@ -113006,16 +113008,7 @@ hideButton.onclick = async () => {
     hideButton.classList.add("active-btn");
   } else {
     hideButton.classList.remove("active-btn");
-    if (selectedSubset) {
-      viewer.IFC.loader.ifcManager.clearSubset(
-        model.modelID, 
-        "hidden-selection"
-      );
-      viewer.context.scene.add(model);
-      togglePickable(model,selectedSubset,false);
-      viewer.context.renderer.postProduction.update();
-      viewer.IFC.selector.unpickIfcItems();
-    }
+    
   }
 };
 
@@ -113028,7 +113021,17 @@ isolateButton.onclick = () => {
     isolateButton.classList.add("active-btn");
   } else {
     isolateButton.classList.remove("active-btn");
-    viewer.IFC.selector.unHighlightIfcItems();
+    //viewer.IFC.selector.unHighlightIfcItems();
+    if (selectedSubset) {
+      viewer.IFC.loader.ifcManager.clearSubset(
+        model.modelID, 
+        "isolated-selection"
+      );
+      viewer.context.scene.add(model);
+      togglePickable(model,selectedSubset,false);
+      viewer.context.renderer.postProduction.update();
+      viewer.IFC.selector.unpickIfcItems();
+    }
   }
 };
 
@@ -113123,21 +113126,17 @@ function createClassEntry(key, classessGUI, modelID) {
 
   classessGUI.appendChild(propContainer);
   divSvg.onclick = async () => {
-    viewer.IFC.loader.ifcManager.removeSubset(modelID);
     const txt = divSvg.parentElement.childNodes[0].textContent;
-    console.log(txt);
     const filteredIDs = await getObjects(modelID, txt);
-    await viewer.IFC.selector.highlightIfcItemsByID(
+    isolate(filteredIDs,model);
+    /*await viewer.IFC.selector.highlightIfcItemsByID(
       modelID,
       filteredIDs,
       false,
       false
     );
-    togglePickable(modelID,model,false);
-    //window.onclick=()=>{
-      //viewer.IFC.loader.ifcManager.getSubset()
-      ///viewer.IFC.loader.ifcManager.removeSubset(modelID);
-    //}
+    togglePickable(modelID,model,false);*/
+    
   };
   keyElement.onclick = async () => {
     const txt = divSvg.parentElement.childNodes[0].textContent;
