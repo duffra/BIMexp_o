@@ -369,6 +369,13 @@ input[type="file"] {
   display: none;
 }
 
+#text-container{
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+}
+
 .tooltiptext {
   visibility: hidden;
   background-color: var(--deep-blue_01);
