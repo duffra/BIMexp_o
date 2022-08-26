@@ -8,6 +8,7 @@
   --deep-blue_02: #07182e;
   --background: ghostwhite;
   --card_background: #f5f5f5;
+  --contrast-color: orange;
 }
 
 body {
@@ -569,6 +570,14 @@ ul,
   position: absolute;
   right: 0.6rem;
   cursor: pointer;
+}
+
+.middle{
+  right: 2rem;
+}
+
+.icon-active{
+  fill:var(--contrast-color)
 }
 
 #ifc-classes-menu{

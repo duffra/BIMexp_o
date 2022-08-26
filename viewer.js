@@ -2,8 +2,6 @@ import { projects } from "./projects.js";
 import { Color } from "three";
 import { IfcViewerAPI } from "web-ifc-viewer";
 
-let classIsolateActive = false;
-
 window.document.body.style.overflow = "hidden";
 const currentURL = window.location.href;
 url = new URL(currentURL);
@@ -82,7 +80,9 @@ window.onclick = async () => {
   }
 
   if (hideBtnActive) {
-    //viewer.IFC.selector.highlightIfcItem(true, false, true);
+    let selectedIDs=[];
+    selectedIDs.push(selected.id);
+    hide(selectedIDs,model);
   }
 
   if(nativePropertiesBtnActive){
@@ -184,6 +184,53 @@ function isolate(ids,mymodel){
   viewer.context.renderer.postProduction.update();
 }
 
+function hide(ids,mymodel){
+  const allIds=getAllIds(mymodel);
+  let all=[...allIds];
+
+  const wholeModel=getWholeSubset(viewer,mymodel,all);
+  //mymodel.removeFromParent();
+  replaceOriginalModelBySubset(viewer, mymodel, wholeModel);
+  viewer.IFC.loader.ifcManager.removeFromSubset(mymodel.modelID,ids,"full-model-subset")
+  viewer.context.renderer.postProduction.update();
+  viewer.IFC.selector.unPrepickIfcItems();
+}
+
+function getAllIds(ifcModel) {
+	return Array.from(
+		new Set(ifcModel.geometry.attributes.expressID.array),
+	);
+}
+
+function getWholeSubset(viewer, ifcModel, allIDs) {
+	return viewer.IFC.loader.ifcManager.createSubset({
+		modelID: ifcModel.modelID,
+		ids: allIDs,
+		applyBVH: true,
+		scene: ifcModel.parent,
+		removePrevious: true,
+		customID: 'full-model-subset',
+	});
+}
+
+function replaceOriginalModelBySubset(viewer, ifcModel, subset) {
+	const items = viewer.context.items;
+
+	items.pickableIfcModels = items.pickableIfcModels.filter(model => model !== ifcModel);
+	items.ifcModels = items.ifcModels.filter(model => model !== ifcModel);
+	ifcModel.removeFromParent();
+
+	items.ifcModels.push(subset);
+	items.pickableIfcModels.push(subset);
+}
+
+function showOriginal(myModel){
+  viewer.IFC.loader.ifcManager.clearSubset(myModel.modelID,"full-model-subset");
+  viewer.context.scene.add(myModel);
+  viewer.context.renderer.postProduction.update();
+  viewer.context.items.pickableIfcModels = original_pickableIfcModels;
+}
+
 function togglePickable(mymodel, mysubset, isPickable){
   if (isPickable){
     viewer.context.items.pickableIfcModels = viewer.context.items.pickableIfcModels.filter((m) => m !== mymodel);
@@ -259,7 +306,7 @@ hideButton.onclick = async () => {
     hideButton.classList.add("active-btn");
   } else {
     hideButton.classList.remove("active-btn");
-    
+    showOriginal(model);
   }
 };
 
@@ -354,8 +401,9 @@ function createClassEntry(key, classessGUI, modelID) {
   propContainer.appendChild(keyElement);
 
   const divSvg = document.createElement("button");
-  divSvg.classList.add("btn-ifcClasses");
+  divSvg.classList.add("btn-ifcClasses","middle");
   const iconSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  iconSvg.classList.add("class-icon","isolate");
   iconSvg.setAttribute("clip-rule", "evenodd");
   iconSvg.setAttribute("fill-rule", "evenodd");
   iconSvg.setAttribute("stroke-linejoin", "round");
@@ -375,20 +423,84 @@ function createClassEntry(key, classessGUI, modelID) {
   divSvg.appendChild(iconSvg);
   propContainer.appendChild(divSvg);
 
+  const divSvg2 = document.createElement("button");
+  divSvg2.classList.add("btn-ifcClasses");
+  const iconSvg2 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  iconSvg2.classList.add("class-icon","hide");
+  iconSvg2.setAttribute("clip-rule", "evenodd");
+  iconSvg2.setAttribute("fill-rule", "evenodd");
+  iconSvg2.setAttribute("stroke-linejoin", "round");
+  iconSvg2.setAttribute("stroke-miterlimit", "2");
+  iconSvg2.setAttribute("viewBox", "0 0 24 24");
+  iconSvg2.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  const pathSvg2 = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path"
+  );
+  pathSvg2.setAttribute(
+    "d",
+    "m17.069 6.546 2.684-2.359c.143-.125.32-.187.497-.187.418 0 .75.34.75.75 0 .207-.086.414-.254.562l-16.5 14.501c-.142.126-.319.187-.496.187-.415 0-.75-.334-.75-.75 0-.207.086-.414.253-.562l2.438-2.143c-1.414-1.132-2.627-2.552-3.547-4.028-.096-.159-.144-.338-.144-.517s.049-.358.145-.517c2.111-3.39 5.775-6.483 9.853-6.483 1.815 0 3.536.593 5.071 1.546zm2.318 1.83c.967.943 1.804 2.013 2.475 3.117.092.156.138.332.138.507s-.046.351-.138.507c-2.068 3.403-5.721 6.493-9.864 6.493-1.298 0-2.553-.313-3.73-.849l2.624-2.307c.352.102.724.156 1.108.156 2.208 0 4-1.792 4-4 0-.206-.016-.408-.046-.606zm-4.932.467c-.678-.528-1.53-.843-2.455-.843-2.208 0-4 1.792-4 4 0 .741.202 1.435.553 2.03l1.16-1.019c-.137-.31-.213-.651-.213-1.011 0-1.38 1.12-2.5 2.5-2.5.474 0 .918.132 1.296.362z"
+  );
+  pathSvg2.setAttribute("fill-rule", "nonzero");
+  iconSvg2.appendChild(pathSvg2);
+  divSvg2.appendChild(iconSvg2);
+  propContainer.appendChild(divSvg2);
+
+
   classessGUI.appendChild(propContainer);
   divSvg.onclick = async () => {
-    const txt = divSvg.parentElement.childNodes[0].textContent;
-    const filteredIDs = await getObjects(modelID, txt);
-    isolate(filteredIDs,model);
-    /*await viewer.IFC.selector.highlightIfcItemsByID(
-      modelID,
-      filteredIDs,
-      false,
-      false
-    );
-    togglePickable(modelID,model,false);*/
+    const currentIcon=divSvg.childNodes[0];
+    const isActive=currentIcon.classList.contains('icon-active');
+
+    if (!isActive){
+      showOriginal(model);
+      const allIcons=Array.from(document.getElementsByClassName("class-icon"));
+      for (const icon of allIcons){
+        icon.classList.remove("icon-active");
+      }
+      const currentIcon=divSvg.childNodes[0];
+      currentIcon.classList.add("icon-active");
+  
+      const txt = divSvg.parentElement.childNodes[0].textContent;
+      const filteredIDs = await getObjects(modelID, txt);
+      isolate(filteredIDs,model);
+    }
+    else{
+      if (selectedSubset) {
+        currentIcon.classList.remove("icon-active");
+        viewer.IFC.loader.ifcManager.clearSubset(
+          model.modelID, 
+          "isolated-selection"
+        );
+        viewer.context.scene.add(model);
+        togglePickable(model,selectedSubset,false);
+        viewer.context.renderer.postProduction.update();
+        viewer.IFC.selector.unpickIfcItems();
+      }
+    }
     
   };
+
+  divSvg2.onclick = async () => {
+    const currentIcon=divSvg2.childNodes[0];
+    const isActive=currentIcon.classList.contains('icon-active');
+    
+    if (!isActive){
+      const allIcons=Array.from(document.getElementsByClassName("class-icon"));
+      for (const icon of allIcons){
+        icon.classList.remove("icon-active");
+      }
+      currentIcon.classList.add("icon-active");
+      const txt = divSvg2.parentElement.childNodes[0].textContent;
+      const filteredIDs = await getObjects(modelID, txt);
+      hide(filteredIDs,model);
+    }
+    else{
+      currentIcon.classList.remove("icon-active");
+      showOriginal(model);
+    }
+  };
+
   keyElement.onclick = async () => {
     const txt = divSvg.parentElement.childNodes[0].textContent;
     console.log(txt);
