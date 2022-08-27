@@ -76,7 +76,7 @@ async function setupPage(viewer){
 }
 
 async function loadIfc(viewer, url) {
-  await viewer.IFC.setWasmPath("./");
+  await viewer.IFC.setWasmPath("../");
   const model = await viewer.IFC.loadIfcUrl(url);
   // Add dropped shadow and post-processing effect
   await viewer.shadowDropper.renderShadow(model.modelID);
