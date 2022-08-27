@@ -2,47 +2,47 @@ const projects=[
     {
         name:"Project-1",
         id:"1",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     },
     {
         name:"Project-2",
         id:"2",
-        path:"../static/IFC/02.ifc"
+        path:"./static/IFC/02.ifc"
     },
     {
         name:"Project-3",
         id:"3",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     },
     {
         name:"Project-4",
         id:"4",
-        path:"../static/IFC/02.ifc"
+        path:"./static/IFC/02.ifc"
     },
     {
         name:"Project-5",
         id:"5",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     },
     {
         name:"Project-6",
         id:"6",
-        path:"../static/IFC/02.ifc"
+        path:"./static/IFC/02.ifc"
     },
     {
         name:"Project-7",
         id:"7",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     },
     {
         name:"Project-8",
         id:"8",
-        path:"../static/IFC/02.ifc"
+        path:"./static/IFC/02.ifc"
     },
     {
         name:"Project-9",
         id:"9",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     }
 ];
 
@@ -112830,7 +112830,7 @@ async function setupPage(viewer){
 }
 
 async function loadIfc(viewer, url) {
-  await viewer.IFC.setWasmPath("../");
+  await viewer.IFC.setWasmPath("./");
   const model = await viewer.IFC.loadIfcUrl(url);
   // Add dropped shadow and post-processing effect
   await viewer.shadowDropper.renderShadow(model.modelID);
