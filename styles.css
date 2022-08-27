@@ -486,7 +486,7 @@ ul,
 }
 
 .ifc-property-menu {
-  border: 1px solid gray;
+  border-top: 1px solid gray;
   width: 100%;
   height: calc((100vh - 4.5rem)/2 - 1.5rem);
   background-color: white;
@@ -585,6 +585,7 @@ ul,
   margin-top: 0;
   height: auto;
   font-size: 12px;
+  border:1px solid gray;
 }
 
 .ifc-classes-item {

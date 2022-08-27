@@ -8,6 +8,11 @@ let selectedSubset;
 let isolateBtnActive = false;
 let hideBtnActive = false;
 
+let nativePropertiesBtnActive = true; 
+let typePropertiesBtnActive = false;
+let materialPropertiesBtnActive = false;
+let psetsPropertiesBtnActive = false;
+
 let viewer;
 
 
@@ -20,7 +25,6 @@ main();
 
 //Make the DIV element draggagle:
 dragElement(document.getElementById("mydiv"));
-
 
 
 async function main(){
@@ -76,9 +80,8 @@ async function setupPage(viewer){
 }
 
 async function loadIfc(viewer, url) {
-  await viewer.IFC.setWasmPath("../");
+  await viewer.IFC.setWasmPath("./");
   const model = await viewer.IFC.loadIfcUrl(url);
-  // Add dropped shadow and post-processing effect
   await viewer.shadowDropper.renderShadow(model.modelID);
   viewer.context.renderer.postProduction.active = true;
   const ifcProject = await viewer.IFC.getSpatialStructure(model.modelID);
@@ -93,6 +96,9 @@ async function loadIfc(viewer, url) {
 
 function setupEvents(viewer, model){
   const propsGUI = document.getElementById("ifc-property-menu-root");
+  const native_HTML = document.getElementById("native-prop");
+  const nativePropertiesButton = document.getElementById("btn-properties-native");
+
   window.onmousemove = async () => await viewer.IFC.selector.prePickIfcItem();
   window.onclick = async () => {
     viewer.IFC.selector.unpickIfcItems();
@@ -111,16 +117,14 @@ function setupEvents(viewer, model){
       selectedIDs.push(selected.id);
       hide(selectedIDs, viewer, model);
     }
-  
+    
     if(nativePropertiesBtnActive){
       nativePropertiesButton.classList.add("active-btn");
       native_HTML.classList.add("selected");
-      //viewer.IFC.selector.unpickIfcItems();
       removeAllChildren(propsGUI);
-      //const selected = await viewer.IFC.selector.pickIfcItem();
       if (!selected) return;
       const { modelID, id } = selected;
-      const props = await viewer.IFC.getProperties(modelID, id); //,true, false);
+      const props = await viewer.IFC.getProperties(modelID, id); 
       try {
         createPropertiesMenu_native(props);
       } catch {
@@ -134,7 +138,6 @@ function setupEvents(viewer, model){
     };  
     
     if (typePropertiesBtnActive){
-      //viewer.IFC.selector.unpickIfcItems();
       removeAllChildren(propsGUI);
       if (!selected) return;
       const { modelID, id } = selected;
@@ -150,9 +153,7 @@ function setupEvents(viewer, model){
       }
     }
     if(materialPropertiesBtnActive){
-      //viewer.IFC.selector.unpickIfcItems();
       removeAllChildren(propsGUI);
-      //const selected = await viewer.IFC.selector.pickIfcItem();
       if (!selected) return;
       const { modelID, id } = selected;
       const props_material =
@@ -168,9 +169,7 @@ function setupEvents(viewer, model){
       }
     }
     if(psetsPropertiesBtnActive){
-      //viewer.IFC.selector.unpickIfcItems();
       removeAllChildren(propsGUI);
-      //const selected = await viewer.IFC.selector.pickIfcItem();
       if (!selected) return;
       const { modelID, id } = selected;
       const props_psets = await viewer.IFC.loader.ifcManager.getPropertySets(
@@ -380,10 +379,12 @@ function setupToolbarCmd(viewer, model){
   setupClipperButton(viewer);
   setupIsolateButton(viewer, model);
   setupHideButton(viewer, model);
+  setupNativeProps();
+  setupTypeProps();
+  setupMaterialProps();
+  setupPsetsProps();
 }
 
-
-//PROJECT BROWSER-IFC CLASS ----------------------------------------------------------------------------------------
 function getIfcClass(ifcProject) {
   let typeArray = [];
   return getIfcClass_base(ifcProject, typeArray);
@@ -500,6 +501,7 @@ function createClassEntry(key, classessGUI, viewer, model) {
       const txt = divSvg.parentElement.childNodes[0].textContent;
       const filteredIDs = await getObjects(viewer, model.modelID, txt);
       isolate(filteredIDs, viewer, model);
+      viewer.IFC.selector.unpickIfcItems();
     }
     else{
       if (selectedSubset) {
@@ -549,21 +551,106 @@ function createClassEntry(key, classessGUI, viewer, model) {
   };
 }
 
-//PROPERTIES (FOR EVERY PROP TYPE) ----------------------------------------------------------------------------------------
-const propsGUI = document.getElementById("ifc-property-menu-root");
-let nativePropertiesBtnActive = true; //
-let typePropertiesBtnActive = false;
-let materialPropertiesBtnActive = false;
-let psetsPropertiesBtnActive = false;
+function setupNativeProps(){
+  const propsGUI = document.getElementById("ifc-property-menu-root");
+  //NATIVE PROPERTIES BUTTON ------------------------------------------------------------------------------------
+  const nativePropertiesButton = document.getElementById("btn-properties-native");
+  const native_HTML = document.getElementById("native-prop");
 
-//NATIVE PROPERTIES BUTTON ------------------------------------------------------------------------------------
-const nativePropertiesButton = document.getElementById("btn-properties-native");
-const native_HTML = document.getElementById("native-prop");
+  nativePropertiesButton.classList.add("active-btn");
+  native_HTML.classList.add("selected");
 
-nativePropertiesButton.classList.add("active-btn");
-native_HTML.classList.add("selected");
+  nativePropertiesButton.onclick = () => {
+    resetPropertiesMenu();
+    nativePropertiesBtnActive = !nativePropertiesBtnActive;
+    typePropertiesBtnActive = false;
+    materialPropertiesBtnActive = false;
+    psetsPropertiesBtnActive = false;
+  
+    if (nativePropertiesBtnActive) {
+      nativePropertiesButton.classList.add("active-btn");
+      native_HTML.classList.add("selected");
+    } else {
+      nativePropertiesButton.classList.remove("active-btn");
+      native_HTML.classList.remove("selected");
+      removeAllChildren(propsGUI);
+    }
+  };
+}
+
+function setupTypeProps(){
+  const propsGUI = document.getElementById("ifc-property-menu-root");
+  //TYPE PROPERTIES BUTTON ------------------------------------------------------------------------------------
+  const typePropertiesButton = document.getElementById("btn-properties-type");
+  const type_HTML = document.getElementById("type-prop");
+
+  typePropertiesButton.onclick = () => {
+    resetPropertiesMenu();
+    typePropertiesBtnActive = !typePropertiesBtnActive;
+    nativePropertiesBtnActive = false;
+    materialPropertiesBtnActive = false;
+    psetsPropertiesBtnActive = false;
+    if (typePropertiesBtnActive) {
+      typePropertiesButton.classList.add("active-btn");
+      type_HTML.classList.add("selected");
+    } else {
+      typePropertiesButton.classList.remove("active-btn");
+      type_HTML.classList.remove("selected");
+      removeAllChildren(propsGUI);
+    }
+  };
+}
+
+function setupMaterialProps(){
+  const propsGUI = document.getElementById("ifc-property-menu-root");
+  //MATERIAL PROPERTIES BUTTON ------------------------------------------------------------------------------------
+  const materialPropertiesButton = document.getElementById(
+    "btn-properties-material"
+  );
+  const material_HTML = document.getElementById("material-prop");
+
+  materialPropertiesButton.onclick = () => {
+    resetPropertiesMenu();
+    materialPropertiesBtnActive = !materialPropertiesBtnActive;
+    nativePropertiesBtnActive = false;
+    typePropertiesBtnActive = false;
+    psetsPropertiesBtnActive = false;
+    if (materialPropertiesBtnActive) {
+      materialPropertiesButton.classList.add("active-btn");
+      material_HTML.classList.add("selected");
+    } else {
+      materialPropertiesButton.classList.remove("active-btn");
+      material_HTML.classList.remove("selected");
+      removeAllChildren(propsGUI);
+    }
+  };
+}
+
+function setupPsetsProps(){
+  const propsGUI = document.getElementById("ifc-property-menu-root");
+  //PSETS PROPERTIES BUTTON ------------------------------------------------------------------------------------
+  const psetsPropertiesButton = document.getElementById("btn-properties-psets");
+  const psets_HTML = document.getElementById("psets-prop");
+
+  psetsPropertiesButton.onclick = () => {
+    resetPropertiesMenu();
+    psetsPropertiesBtnActive = !psetsPropertiesBtnActive;
+    nativePropertiesBtnActive = false;
+    typePropertiesBtnActive = false;
+    materialPropertiesBtnActive = false;
+    if (psetsPropertiesBtnActive) {
+      psetsPropertiesButton.classList.add("active-btn");
+      psets_HTML.classList.add("selected");
+    } else {
+      psetsPropertiesButton.classList.remove("active-btn");
+      psets_HTML.classList.remove("selected");
+      removeAllChildren(propsGUI);
+    }
+  };
+}
 
 function resetPropertiesMenu() {
+  const propsGUI = document.getElementById("ifc-property-menu-root");
   const prop_HTML = document.getElementsByClassName("prop");
   for (const ele of prop_HTML) {
     ele.classList.remove("active-btn");
@@ -575,150 +662,8 @@ function resetPropertiesMenu() {
   removeAllChildren(propsGUI);
 }
 
-nativePropertiesButton.onclick = () => {
-  resetPropertiesMenu();
-  nativePropertiesBtnActive = !nativePropertiesBtnActive;
-  typePropertiesBtnActive = false;
-  materialPropertiesBtnActive = false;
-  psetsPropertiesBtnActive = false;
-
-  if (nativePropertiesBtnActive) {
-    nativePropertiesButton.classList.add("active-btn");
-    native_HTML.classList.add("selected");
-  } else {
-    nativePropertiesButton.classList.remove("active-btn");
-    native_HTML.classList.remove("selected");
-    removeAllChildren(propsGUI);
-  }
-};
-
-//TYPE PROPERTIES BUTTON ------------------------------------------------------------------------------------
-const typePropertiesButton = document.getElementById("btn-properties-type");
-const type_HTML = document.getElementById("type-prop");
-
-typePropertiesButton.onclick = () => {
-  resetPropertiesMenu();
-  typePropertiesBtnActive = !typePropertiesBtnActive;
-  nativePropertiesBtnActive = false;
-  materialPropertiesBtnActive = false;
-  psetsPropertiesBtnActive = false;
-  if (typePropertiesBtnActive) {
-    typePropertiesButton.classList.add("active-btn");
-    type_HTML.classList.add("selected");
-
-    //window.onmousemove = () => viewer.IFC.selector.prePickIfcItem();
-    /*window.onclick = async () => {
-      if (typePropertiesBtnActive){
-        viewer.IFC.selector.unpickIfcItems();
-        removeAllChildren(propsGUI);
-        const result = await viewer.IFC.selector.pickIfcItem();
-        if (!result) return;
-        const { modelID, id } = result;
-        const props_type = await viewer.IFC.loader.ifcManager.getTypeProperties(
-          modelID,
-          id,
-          true
-        );
-        try {
-          createPropertiesMenu_type(props_type);
-        } catch {
-          removeAllChildren(propsGUI);
-        }
-      }
-    };*/
-  } else {
-    typePropertiesButton.classList.remove("active-btn");
-    type_HTML.classList.remove("selected");
-    removeAllChildren(propsGUI);
-  }
-};
-
-//MATERIAL PROPERTIES BUTTON ------------------------------------------------------------------------------------
-const materialPropertiesButton = document.getElementById(
-  "btn-properties-material"
-);
-const material_HTML = document.getElementById("material-prop");
-
-materialPropertiesButton.onclick = () => {
-  resetPropertiesMenu();
-  materialPropertiesBtnActive = !materialPropertiesBtnActive;
-  nativePropertiesBtnActive = false;
-  typePropertiesBtnActive = false;
-  psetsPropertiesBtnActive = false;
-  if (materialPropertiesBtnActive) {
-    materialPropertiesButton.classList.add("active-btn");
-    material_HTML.classList.add("selected");
-
-    //window.onmousemove = () => viewer.IFC.selector.prePickIfcItem();
-    /* window.onclick = async () => {
-      if(materialPropertiesBtnActive){
-        viewer.IFC.selector.unpickIfcItems();
-        removeAllChildren(propsGUI);
-        const result = await viewer.IFC.selector.pickIfcItem();
-        if (!result) return;
-        const { modelID, id } = result;
-        const props_material =
-          await viewer.IFC.loader.ifcManager.getMaterialsProperties(
-            modelID,
-            id,
-            true
-          );
-        try {
-          createPropertiesMenu_material(props_material);
-        } catch {
-          removeAllChildren(propsGUI);
-        }
-      }
-    }; */
-  } else {
-    materialPropertiesButton.classList.remove("active-btn");
-    material_HTML.classList.remove("selected");
-    removeAllChildren(propsGUI);
-  }
-};
-
-//PSETS PROPERTIES BUTTON ------------------------------------------------------------------------------------
-const psetsPropertiesButton = document.getElementById("btn-properties-psets");
-const psets_HTML = document.getElementById("psets-prop");
-
-psetsPropertiesButton.onclick = () => {
-  resetPropertiesMenu();
-  psetsPropertiesBtnActive = !psetsPropertiesBtnActive;
-  nativePropertiesBtnActive = false;
-  typePropertiesBtnActive = false;
-  materialPropertiesBtnActive = false;
-  if (psetsPropertiesBtnActive) {
-    psetsPropertiesButton.classList.add("active-btn");
-    psets_HTML.classList.add("selected");
-
-    //window.onmousemove = () => viewer.IFC.selector.prePickIfcItem();
-    /*     window.onclick = async () => {
-      if(psetsPropertiesBtnActive){
-        viewer.IFC.selector.unpickIfcItems();
-        removeAllChildren(propsGUI);
-        const result = await viewer.IFC.selector.pickIfcItem();
-        if (!result) return;
-        const { modelID, id } = result;
-        const props_psets = await viewer.IFC.loader.ifcManager.getPropertySets(
-          modelID,
-          id,
-          true
-        );
-        try {
-          createPropertiesMenu_pset(props_psets);
-        } catch {
-          removeAllChildren(propsGUI);
-        }
-      }
-    }; */
-  } else {
-    psetsPropertiesButton.classList.remove("active-btn");
-    psets_HTML.classList.remove("selected");
-    removeAllChildren(propsGUI);
-  }
-};
-
 function createPropertiesMenu_native(properties) {
+  const propsGUI = document.getElementById("ifc-property-menu-root");
   removeAllChildren(propsGUI);
 
   delete properties.psets;
@@ -731,6 +676,7 @@ function createPropertiesMenu_native(properties) {
 }
 
 function createPropertiesMenu_type(properties) {
+  const propsGUI = document.getElementById("ifc-property-menu-root");
   removeAllChildren(propsGUI);
   for (let key in properties[0]) {
     createPropertyEntry(key, properties[0][key]);
@@ -738,6 +684,7 @@ function createPropertiesMenu_type(properties) {
 }
 
 function createPropertiesMenu_material(properties) {
+  const propsGUI = document.getElementById("ifc-property-menu-root");
   removeAllChildren(propsGUI);
 
   for (let ifcMaterialLayerSetUsage of properties) {
@@ -749,6 +696,7 @@ function createPropertiesMenu_material(properties) {
 }
 
 function createPropertiesMenu_pset(properties) {
+  const propsGUI = document.getElementById("ifc-property-menu-root");
   removeAllChildren(propsGUI);
   for (let pset of properties) {
     const hasProp = pset.HasProperties;
@@ -766,6 +714,7 @@ function createPropertiesMenu_pset(properties) {
 }
 
 function createPropertyEntry_pset(pset, key, value) {
+  const propsGUI = document.getElementById("ifc-property-menu-root");
   const container = document.createElement("div");
   container.classList.add("vertical");
 
@@ -789,6 +738,7 @@ function createPropertyEntry_pset(pset, key, value) {
 }
 
 function createPropertyEntry(key, value) {
+  const propsGUI = document.getElementById("ifc-property-menu-root");
   const propContainer = document.createElement("div");
   propContainer.classList.add("ifc-property-item");
 
