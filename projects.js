@@ -1,47 +1,22 @@
 export const projects=[
     {
-        name:"Project-1",
+        name:"ECA - Building",
         id:"1",
-        path:"./static/IFC/01.ifc"
+        path:"./static/IFC/A-04.ifc"
     },
     {
-        name:"Project-2",
+        name:"ARB-Residencial Building",
         id:"2",
-        path:"./static/IFC/02.ifc"
+        path:"./static/IFC/A-07.ifc"
     },
     {
-        name:"Project-3",
+        name:"Bridge-I",
         id:"3",
-        path:"./static/IFC/01.ifc"
+        path:"./static/IFC/I-02.ifc"
     },
     {
-        name:"Project-4",
+        name:"Project sample MEP",
         id:"4",
-        path:"./static/IFC/02.ifc"
+        path:"./static/IFC/M-01.ifc"
     },
-    {
-        name:"Project-5",
-        id:"5",
-        path:"./static/IFC/01.ifc"
-    },
-    {
-        name:"Project-6",
-        id:"6",
-        path:"./static/IFC/02.ifc"
-    },
-    {
-        name:"Project-7",
-        id:"7",
-        path:"./static/IFC/01.ifc"
-    },
-    {
-        name:"Project-8",
-        id:"8",
-        path:"./static/IFC/02.ifc"
-    },
-    {
-        name:"Project-9",
-        id:"9",
-        path:"./static/IFC/01.ifc"
-    }
 ]
