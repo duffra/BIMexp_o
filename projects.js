@@ -2,46 +2,46 @@ export const projects=[
     {
         name:"Project-1",
         id:"1",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     },
     {
         name:"Project-2",
         id:"2",
-        path:"../static/IFC/02.ifc"
+        path:"./static/IFC/02.ifc"
     },
     {
         name:"Project-3",
         id:"3",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     },
     {
         name:"Project-4",
         id:"4",
-        path:"../static/IFC/02.ifc"
+        path:"./static/IFC/02.ifc"
     },
     {
         name:"Project-5",
         id:"5",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     },
     {
         name:"Project-6",
         id:"6",
-        path:"../static/IFC/02.ifc"
+        path:"./static/IFC/02.ifc"
     },
     {
         name:"Project-7",
         id:"7",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     },
     {
         name:"Project-8",
         id:"8",
-        path:"../static/IFC/02.ifc"
+        path:"./static/IFC/02.ifc"
     },
     {
         name:"Project-9",
         id:"9",
-        path:"../static/IFC/01.ifc"
+        path:"./static/IFC/01.ifc"
     }
 ]
