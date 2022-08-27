@@ -39,6 +39,7 @@ This app is built on top of IFC.js and uses web-ifc and web-ifc-viewer.
 - [x] Custom IfcClasses Project Browser: lists the IFC classes included in the model and highlights/isolate/hide the corrisponding elements
 
 - [ ] Considering model coordinates (to have a federation environments)
+- [ ] JSON information preprocessing 
 - [ ] Grouping the instances by Class in the Tree view
 - [ ] Investigate tab interface for the Property menu
 
