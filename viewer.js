@@ -963,7 +963,7 @@ async function getBuildingStoreyNames(viewer, ifcProject, modelID) {
 async function setUpMultiThreading(viewer) {
   const manager = viewer.IFC.loader.ifcManager;
   // These paths depend on how you structure your project
-  await manager.useWebWorkers(true, "../IFCWorker.js");
+  await manager.useWebWorkers(true, "./IFCWorker.js");
 }
 
 function setupProgressNotification(viewer) {
